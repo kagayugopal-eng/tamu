@@ -136,12 +136,45 @@ async function detailSlide(prefix,idx,col,it){
   }
 }
 
+
+async function caseSlide(title,sec,col,cases,srcText,notes){
+  const sl = pres.addSlide({masterName:"CONTENT", sectionTitle:sec});
+  slideTitle(sl,title);
+  const n=cases.length, cols=n>4?3:2, rowsN=Math.ceil(n/cols);
+  const gap=0.2, w=(9-gap*(cols-1))/cols, h=n>4?1.7:1.75;
+  for (let i=0;i<n;i++){
+    const cx=0.5+(i%cols)*(w+gap), cy=1.15+Math.floor(i/cols)*(h+0.15);
+    sl.addShape(pres.ShapeType.roundRect,{x:cx,y:cy,w,h,rectRadius:0.1,fill:{color:C.background1,transparency:15},line:{color:"E4D9EE",width:0.75},objectName:"CaseCard"+i});
+    sl.addShape(pres.ShapeType.ellipse,{x:cx+0.2,y:cy+0.15,w:0.4,h:0.4,fill:{color:col},line:{type:"none"},objectName:"CaseIconBg"+i});
+    sl.addImage({data:await icon(cases[i][0]),x:cx+0.3,y:cy+0.25,w:0.2,h:0.2,altText:cases[i][1]});
+    tb(sl,cases[i][1],{x:cx+0.7,y:cy+0.15,w:w-0.9,h:0.4,fontSize:13,bold:true,color:C.text1,valign:"middle",objectName:"CaseName"+i});
+    tb(sl,cases[i][2],{x:cx+0.2,y:cy+0.65,w:w-0.4,h:h-0.75,fontSize:12,color:C.text1,valign:"top",objectName:"CaseDesc"+i});
+  }
+  tb(sl,srcText,{x:0.5,y:4.88,w:9,h:0.3,fontSize:10,color:C.accent5,objectName:"Source"});
+  sl.addNotes(notes);
+}
 pres.addSection({title:"健康"});
 await listSlide("健康に関する福利厚生",HEALTH,HEALTH_ITEMS.map(a=>[a[0],a[1],a[2]]),"健康に関する福利厚生の案を6つ紹介します。各案の内容は次のページ以降で説明します。");
 for (let i=0;i<6;i++) await detailSlide("健康",i,HEALTH,HEALTH_ITEMS[i]);
+await caseSlide("他社の事例(健康)","健康",HEALTH,[
+ ["FaAward","サニーサイドアップ「目指せA身体制度」","健康診断でA判定を取った社員に、健康ボーナスを支給する(報道では32,000円)"],
+ ["FaSmokingBan","メーカーズ「非喫煙者手当」","禁煙した人ではなく非喫煙者に、月10,000円を支給する"],
+ ["FaFemale","サイバーエージェント「エフ休」","女性特有の体調不良のときに、月1回使える特別休暇"],
+ ["FaLungs","BLITZ Marketing","社内に酸素カプセルを設置し、疲労回復に使える"],
+ ["FaHandHoldingMedical","大塚倉庫の協力運送会社","接骨院の出張マッサージを実施し、ドライバーに好評。家族も参加できる社内イベントも開催"],
+ ["FaUtensils","共進運輸","ドライバーも使いやすい食事補助「チケットレストラン」を2022年4月から導入"]],
+ "出典:edenred.jp、yulife.com、lnews.jp(各社の公開情報。導入時は最新情報をご確認ください)",
+ "出典URL: https://edenred.jp/article/employee-benefits/223/ ; https://edenred.jp/article/employee-benefits/124/ ; https://yulife.com/jp/blog/unique-company-benefits ; https://www.lnews.jp/2025/03/r0324601.html ; https://edenred.jp/ticketrestaurant/cases/case-34");
 pres.addSection({title:"防災"});
 await listSlide("防災に関する福利厚生",DISASTER,DISASTER_ITEMS.map(a=>[a[0],a[1],a[2]]),"防災に関する福利厚生の案を6つ紹介します。各案の内容は次のページ以降で説明します。");
 for (let i=0;i<6;i++) await detailSlide("防災",i,DISASTER,DISASTER_ITEMS[i]);
+await caseSlide("他社の事例(防災)","防災",DISASTER,[
+ ["FaBoxOpen","三井住友海上火災保険","全社員に3日分の備蓄品を配り、机の下に保管。社員の安否登録を家族に通知できる独自システムも開発"],
+ ["FaUsers","明治安田生命","安否確認の家族用伝言サービスを役職員の家族も利用可能に。家族向け防災カードや災害緊急キットも用意"],
+ ["FaRecycle","ケンコーマヨネーズ","従業員向けの防災備蓄を管理し、期限が近い食品は社員に配るかフードバンクへ寄付"],
+ ["FaHome","ディスコ","従業員の家族向けに、会社見学会の機会を使った防災啓発を実施"]],
+ "出典:内閣官房「国土強靱化 民間の取組事例」、大阪府、東京都防災ホームページ",
+ "出典URL: https://www.cas.go.jp/jp/seisaku/kokudo_kyoujinka/h29_minkan/pdf/2196.pdf ; https://www.pref.osaka.lg.jp/o020080/kikikanri/trikumijireimeiji/index.html ; https://www.bousai.metro.tokyo.lg.jp/_res/projects/default_project/_page_/001/013/952/torikumijirei.pdf ; https://www.cas.go.jp/jp/seisaku/kokudo_kyoujinka/h29_minkan/pdf/00003m.pdf (ディスコは目次の記載のみで詳細未確認)");
 
 await pres.writeFile({fileName:"welfare_health_disaster.pptx"});
 await applyTheme("welfare_health_disaster.pptx",THEME);
