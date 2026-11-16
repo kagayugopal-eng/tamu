@@ -48,45 +48,64 @@ s.addShape(pres.ShapeType.ellipse,{x:0.7,y:1.35,w:0.7,h:0.7,fill:{color:HEALTH},
 s.addImage({data:await icon("FaHeartbeat"),x:0.88,y:1.53,w:0.34,h:0.34,altText:"健康"});
 s.addShape(pres.ShapeType.ellipse,{x:1.55,y:1.35,w:0.7,h:0.7,fill:{color:DISASTER},line:{type:"none"},objectName:"DisasterIconBg"});
 s.addImage({data:await icon("FaShieldAlt"),x:1.73,y:1.53,w:0.34,h:0.34,altText:"防災"});
-tb(s,"福利厚生のご提案",{x:0.7,y:2.3,w:8,h:0.9,fontSize:44,bold:true,color:C.text1,objectName:"Title"});
-tb(s,"健康・防災の取り組み案",{x:0.7,y:3.2,w:8,h:0.6,fontSize:26,color:C.accent1,objectName:"Subtitle"});
+tb(s,"福利厚生の案",{x:0.7,y:2.3,w:8,h:0.9,fontSize:44,bold:true,color:C.text1,objectName:"Title"});
+tb(s,"健康・防災に関する福利厚生",{x:0.7,y:3.2,w:8,h:0.6,fontSize:26,color:C.accent1,objectName:"Subtitle"});
 tb(s,"株式会社Gopal  オペレーション",{x:0.7,y:4.3,w:6,h:0.35,fontSize:14,color:C.accent5,objectName:"Org"});
 s.addNotes("福利厚生として検討したい「健康」「防災」の2分野について、案を整理した資料です。");
 
-// 2 背景
-pres.addSection({title:"背景と案"});
-s = pres.addSlide({masterName:"CONTENT", sectionTitle:"背景と案"});
-slideTitle(s,"なぜ今、健康と防災なのか");
-const why=[["FaTruck","体が資本の仕事","長時間の運転・荷物の積み下ろしで、腰痛や疲労、睡眠不足が起きやすい"],
- ["FaCloudSunRain","移動中に被災するリスク","配送中に地震・豪雨・猛暑に遭う可能性があり、会社の備えが安心につながる"],
- ["FaHandsHelping","安心して長く働ける環境","福利厚生の充実は、定着率の向上や採用での魅力づくりにもつながる"]];
-for (let i=0;i<3;i++){ const y=1.25+i*1.25;
-  s.addShape(pres.ShapeType.roundRect,{x:0.5,y,w:9,h:1.05,rectRadius:0.12,fill:{color:C.background1,transparency:15},line:{color:"E4D9EE",width:0.75},objectName:"WhyCard"+i});
-  s.addShape(pres.ShapeType.ellipse,{x:0.75,y:y+0.17,w:0.7,h:0.7,fill:{color:C.accent1},line:{type:"none"},objectName:"WhyIconBg"+i});
-  s.addImage({data:await icon(why[i][0]),x:0.92,y:y+0.34,w:0.36,h:0.36,altText:why[i][1]});
-  tb(s,why[i][1],{x:1.75,y:y+0.12,w:7.5,h:0.35,fontSize:18,bold:true,color:C.text1,objectName:"WhyHead"+i});
-  tb(s,why[i][2],{x:1.75,y:y+0.5,w:7.5,h:0.45,fontSize:14,color:C.text1,valign:"top",objectName:"WhyBody"+i});
-}
-s.addNotes("背景の整理。数値データは社内の実態に合わせて追記できます。");
+const HEALTH_ITEMS=[
+ ["FaUserMd","健康診断・人間ドック補助","病気を早く見つけるための受診を、会社が支える",
+  "年1回の健康診断や人間ドックの受診費用を、会社が補助する制度です。",
+  "忙しくて受診を後回しにしがちな人も、病気を早期に見つけやすくなります。",
+  "提携医療機関での受診、または自己負担分を上限額の範囲内で精算します。"],
+ ["FaBrain","メンタルヘルス相談窓口","話しにくい悩みを、外部の専門家に相談できる",
+  "外部のカウンセラーなどに、匿名・無料で相談できる窓口を用意します。",
+  "仕事のストレスや人間関係、家庭の悩みなど、社内には話しにくいことを相談できます。",
+  "電話・チャット・オンラインで相談。相談内容が会社に伝わらない仕組みにします。"],
+ ["FaSyringe","予防接種の費用補助","流行期の欠勤や配送の遅れを減らす",
+  "インフルエンザなどの予防接種にかかる費用を補助します。",
+  "流行期の体調不良による欠勤や、配送の遅れを減らせます。",
+  "接種後に領収書を提出し、上限額の範囲内で補助します。"],
+ ["FaRunning","運動・フィットネス補助","運転中心の生活で不足しがちな運動を後押し",
+  "ジム、スポーツクラブ、ヨガ教室などの利用料を一部補助します。",
+  "運転が中心で運動不足になりがちな人の体づくりや、腰痛の予防に役立ちます。",
+  "月額の上限を決めて補助、またはオンライン運動サービスを法人で契約します。"],
+ ["FaSun","腰痛・熱中症対策グッズ","仕事中の体の負担を、道具で軽くする",
+  "腰サポーター、塩タブレット、冷却タオル、ネッククーラーなどを配布します。",
+  "荷物の積み下ろしや、夏場の車内・屋外での作業で体の負担を減らせます。",
+  "入社時や季節の変わり目に配布。希望者には追加で渡します。"],
+ ["FaBed","健康セミナー・睡眠改善","体調管理の知識を、好きな時間に学べる",
+  "体調管理、食事、睡眠、ストレッチなどの講座をオンラインで提供します。",
+  "勤務時間が不規則になりやすく、睡眠不足や生活習慣の乱れが起きやすい人に向いています。",
+  "短い動画やオンライン講座を、自分の好きな時間に視聴できます。"]];
+const DISASTER_ITEMS=[
+ ["FaMobileAlt","安否確認システム","災害時に、全員の無事をすばやく把握する",
+  "災害時にスマホへ一斉通知し、「無事」「要支援」などを回答してもらう仕組みです。",
+  "地震や豪雨で連絡が取りにくいときに、全員の状況をすぐに把握できます。",
+  "アプリやメールで通知。年に数回の訓練配信で、使い方に慣れておきます。"],
+ ["FaBoxOpen","防災グッズの支給","配送中も自宅でも、最低限の備えを持てる",
+  "車載用(ライト、携帯トイレ、ブランケットなど)と自宅用の防災セットを配布します。",
+  "配送中や自宅で被災したときに、当面を乗り切る備えになります。",
+  "入社時に配布し、使用期限を管理して定期的に入れ替えます。"],
+ ["FaUtensils","非常食・飲料水の備蓄","拠点で待機することになっても安心",
+  "営業所や拠点に、水、非常食、簡易トイレなどを備蓄します。",
+  "帰宅が難しくなったときや、拠点で待機が必要になったときに役立ちます。",
+  "人数と日数を決めて備蓄し、期限を管理する担当者を決めます。"],
+ ["FaChalkboardTeacher","防災研修・避難訓練","いざという時に、慌てず行動できるようにする",
+  "災害時の行動、避難経路、配送中に被災したときの判断方法を学びます。",
+  "運転中や配送先で地震・豪雨に遭ったときに、落ち着いて行動できます。",
+  "年1回の研修と避難訓練に、動画教材を組み合わせます。"],
+ ["FaHandHoldingHeart","災害見舞金・特別休暇","被災後の生活再建を、お金と時間で支える",
+  "自宅が被害を受けたときなどに、見舞金の支給や特別休暇を認める制度です。",
+  "被災後の片付けや生活の立て直しに専念できます。",
+  "被害の程度に応じた金額と休暇日数を、社内規程で定めます。"],
+ ["FaCar","悪天候時の運行ルール","無理な運行によるけがや事故を防ぐ",
+  "大雨・大雪・地震・台風のときに、運行の中止・待機・再開を判断する基準と連絡の流れを整えます。",
+  "無理な運行による事故やけがを防ぎ、安全を最優先にできます。",
+  "警報のレベルごとの対応表を作り、全員に共有します。"]];
 
-// 3 overview
-s = pres.addSlide({masterName:"CONTENT", sectionTitle:"背景と案"});
-slideTitle(s,"案の全体像:各6案");
-const H=["健康診断・人間ドック補助","メンタルヘルス相談窓口","予防接種の費用補助","運動・フィットネス補助","腰痛・熱中症対策グッズ","健康セミナー・睡眠改善"];
-const D=["安否確認システム","防災グッズの支給","非常食・飲料水の備蓄","防災研修・避難訓練","災害見舞金・特別休暇","悪天候時の運行ルール整備"];
-const panels=[["健康",H,0.5,HEALTH,"FaHeartbeat"],["防災",D,5.15,DISASTER,"FaShieldAlt"]];
-for (const [nm,list,x,col,ic] of panels){
-  s.addShape(pres.ShapeType.roundRect,{x,y:1.2,w:4.35,h:3.8,rectRadius:0.12,fill:{color:C.background1,transparency:15},line:{color:"E4D9EE",width:0.75},objectName:nm+"Panel"});
-  s.addShape(pres.ShapeType.ellipse,{x:x+0.25,y:1.4,w:0.6,h:0.6,fill:{color:col},line:{type:"none"},objectName:nm+"IconBg"});
-  s.addImage({data:await icon(ic),x:x+0.40,y:1.55,w:0.3,h:0.3,altText:nm});
-  tb(s,nm+"に関する福利厚生",{x:x+1.0,y:1.4,w:3.2,h:0.6,fontSize:20,bold:true,color:C.text1,valign:"middle",objectName:nm+"Head"});
-  s.addText(list.map((t,i)=>({text:t,options:{bullet:true,breakLine:i<list.length-1}})),
-    {isTextBox:true,x:x+0.3,y:2.25,w:3.8,h:2.6,fontSize:15,color:C.text1,valign:"top",paraSpaceAfter:8,margin:0,objectName:nm+"List"});
-}
-
-// 4/5 idea grids
-async function grid(title,col,items,sec){
-  const sl = pres.addSlide({masterName:"CONTENT", sectionTitle:sec});
+async function listSlide(title,col,items,notes){
+  const sl = pres.addSlide({masterName:"CONTENT", sectionTitle:title.slice(0,2)});
   slideTitle(sl,title);
   for (let i=0;i<6;i++){
     const cx=0.5+(i%3)*3.1, cy=1.15+Math.floor(i/3)*2.0, w=2.8, h=1.85;
@@ -97,69 +116,33 @@ async function grid(title,col,items,sec){
     tb(sl,items[i][1],{x:cx+0.2,y:cy+0.78,w:w-0.4,h:0.32,fontSize:14,bold:true,color:C.text1,objectName:"CardTitle"+i});
     tb(sl,items[i][2],{x:cx+0.2,y:cy+1.1,w:w-0.4,h:0.65,fontSize:11,color:C.text1,valign:"top",objectName:"CardDesc"+i});
   }
-  return sl;
+  sl.addNotes(notes);
 }
+const NUM="①②③④⑤⑥";
+async function detailSlide(prefix,idx,col,it){
+  const sl = pres.addSlide({masterName:"CONTENT", sectionTitle:prefix});
+  slideTitle(sl,prefix+NUM[idx]+" "+it[1]);
+  sl.addShape(pres.ShapeType.roundRect,{x:0.5,y:1.2,w:2.9,h:3.8,rectRadius:0.12,fill:{color:C.background1,transparency:15},line:{color:"E4D9EE",width:0.75},objectName:"SummaryPanel"});
+  sl.addShape(pres.ShapeType.ellipse,{x:1.45,y:1.5,w:1.0,h:1.0,fill:{color:col},line:{type:"none"},objectName:"SummaryIconBg"});
+  sl.addImage({data:await icon(it[0]),x:1.72,y:1.77,w:0.46,h:0.46,altText:it[1]});
+  tb(sl,it[1],{x:0.7,y:2.7,w:2.5,h:0.8,fontSize:18,bold:true,color:C.text1,align:"center",valign:"middle",objectName:"SummaryName"});
+  tb(sl,it[2],{x:0.7,y:3.55,w:2.5,h:1.2,fontSize:13,color:C.accent5,align:"center",valign:"top",objectName:"SummaryCatch"});
+  const labels=["内容","役立つ場面","実施のイメージ"];
+  for (let k=0;k<3;k++){
+    const y=1.2+k*1.3;
+    sl.addShape(pres.ShapeType.roundRect,{x:3.7,y,w:1.5,h:0.34,rectRadius:0.17,fill:{color:col},line:{type:"none"},objectName:"Label"+k});
+    tb(sl,labels[k],{x:3.7,y,w:1.5,h:0.34,fontSize:12,bold:true,color:C.background1,align:"center",valign:"middle",objectName:"LabelText"+k});
+    tb(sl,it[3+k],{x:3.7,y:y+0.43,w:5.8,h:0.75,fontSize:14,color:C.text1,valign:"top",objectName:"Body"+k});
+  }
+}
+
 pres.addSection({title:"健康"});
-s = await grid("健康に関する案",HEALTH,[
- ["FaUserMd","健康診断・人間ドック補助","年1回の受診費用を補助し、病気の早期発見を後押しする"],
- ["FaBrain","メンタルヘルス相談窓口","外部の専門家に匿名・無料で相談できる窓口を設ける"],
- ["FaSyringe","予防接種の費用補助","インフルエンザ等の接種費用を補助し、欠勤を防ぐ"],
- ["FaRunning","運動・フィットネス補助","ジムやスポーツ施設の利用料を一部補助する"],
- ["FaSun","腰痛・熱中症対策グッズ","サポーター、塩タブレット、冷却グッズを配布する"],
- ["FaBed","健康セミナー・睡眠改善","体調管理や睡眠の講座をオンラインで提供する"]],"健康");
-s.addNotes("ドライバー業務に直結する腰痛・熱中症・睡眠・メンタルに焦点を当てた案です。");
+await listSlide("健康に関する福利厚生",HEALTH,HEALTH_ITEMS.map(a=>[a[0],a[1],a[2]]),"健康に関する福利厚生の案を6つ紹介します。各案の内容は次のページ以降で説明します。");
+for (let i=0;i<6;i++) await detailSlide("健康",i,HEALTH,HEALTH_ITEMS[i]);
 pres.addSection({title:"防災"});
-s = await grid("防災に関する案",DISASTER,[
- ["FaMobileAlt","安否確認システム","災害時にスマホで安否を一斉確認し、状況を把握する"],
- ["FaBoxOpen","防災グッズの支給","車載用・自宅用の防災セットを配布する"],
- ["FaUtensils","非常食・飲料水の備蓄","営業所や拠点に水と非常食を備蓄する"],
- ["FaChalkboardTeacher","防災研修・避難訓練","配送中に被災した場合の行動を学び、訓練する"],
- ["FaHandHoldingHeart","災害見舞金・特別休暇","被災時に見舞金と特別休暇で生活を支える"],
- ["FaCar","悪天候時の運行ルール","大雨・地震時の運行判断基準と連絡フローを整える"]],"防災");
-s.addNotes("配送中の被災を想定した備えと、被災後の生活支援の両面で整理しました。");
+await listSlide("防災に関する福利厚生",DISASTER,DISASTER_ITEMS.map(a=>[a[0],a[1],a[2]]),"防災に関する福利厚生の案を6つ紹介します。各案の内容は次のページ以降で説明します。");
+for (let i=0;i<6;i++) await detailSlide("防災",i,DISASTER,DISASTER_ITEMS[i]);
 
-// 7 priority table
-pres.addSection({title:"進め方"});
-s = pres.addSlide({masterName:"CONTENT", sectionTitle:"進め方"});
-slideTitle(s,"優先して検討したい6案");
-const hd=(t)=>({text:t,options:{bold:true,color:"FFFFFF",fill:{color:"C23B93"},align:"center",valign:"middle"}});
-const rows=[[ "案","期待効果","費用感","導入しやすさ"],
- ["安否確認システム","高","低","高"],["メンタルヘルス相談窓口","高","低〜中","高"],["予防接種の費用補助","中","低","高"],
- ["防災グッズの支給","中","低〜中","高"],["健康診断・人間ドック補助","高","中","中"],["災害見舞金・特別休暇","高","中","中"]];
-s.addTable(rows.map((r,i)=> i==0? r.map(hd): r.map((t,j)=>({text:t,options:{align:j?"center":"left",valign:"middle",color:"222222",bold:j==0,fill:{color:i%2?"FFFFFF":"F6F0FA"}}}))),
- {x:0.5,y:1.2,w:9,colW:[3.9,1.7,1.7,1.7],rowH:0.5,fontSize:14,border:{type:"solid",pt:0.5,color:"E4D9EE"},objectName:"PriorityTable"});
-tb(s,"※評価は当社想定の目安です。見積もり取得後に見直します",{x:0.5,y:4.85,w:8.5,h:0.3,fontSize:11,color:C.accent5,objectName:"Note"});
-
-// 8 roadmap
-s = pres.addSlide({masterName:"CONTENT", sectionTitle:"進め方"});
-slideTitle(s,"導入ロードマップ(案)");
-const ph=[["第1段階","〜3か月",C.accent3,["安否確認システム","メンタル相談窓口","予防接種の費用補助"]],
- ["第2段階","3〜6か月",C.accent2,["防災グッズの支給","防災研修・訓練","健康セミナー"]],
- ["第3段階","6〜12か月",C.accent1,["健康診断・人間ドック補助","災害見舞金制度","フィットネス補助"]]];
-ph.forEach(([a,b,col,list],i)=>{
-  const x=0.5+i*3.05;
-  s.addShape(pres.ShapeType.chevron,{x,y:1.25,w:3.0,h:0.8,fill:{color:col},line:{type:"none"},objectName:"Chevron"+i});
-  tb(s,a+"  "+b,{x:x+0.45,y:1.25,w:2.2,h:0.8,fontSize:15,bold:true,color:C.background1,valign:"middle",align:"center",objectName:"PhaseLabel"+i});
-  s.addShape(pres.ShapeType.roundRect,{x:x+0.05,y:2.3,w:2.8,h:1.9,rectRadius:0.1,fill:{color:C.background1,transparency:15},line:{color:"E4D9EE",width:0.75},objectName:"PhaseCard"+i});
-  s.addText(list.map((t,k)=>({text:t,options:{bullet:true,breakLine:k<list.length-1}})),
-    {isTextBox:true,x:x+0.3,y:2.55,w:2.35,h:1.5,fontSize:14,color:C.text1,valign:"top",paraSpaceAfter:10,margin:0,objectName:"PhaseList"+i});
-});
-s.addNotes("低コスト・導入しやすい案から先行し、費用のかかる制度は予算確認後に進めます。");
-
-// 9 next steps
-s = pres.addSlide({masterName:"CONTENT", sectionTitle:"進め方"});
-slideTitle(s,"ご相談したいこと");
-const q=[["FaUsers","対象者の範囲","社員のみか、ドライバー(業務委託含む)まで広げるか"],
- ["FaYenSign","予算の枠","年間・一人あたりの上限をどこに置くか"],
- ["FaListOl","優先順位","6案のうち、まず始める案はどれか"],
- ["FaCalendarCheck","担当と開始時期","担当部署の決定と、第1段階の開始月"]];
-for (let i=0;i<4;i++){ const cx=0.5+(i%2)*4.6, cy=1.25+Math.floor(i/2)*1.8;
-  s.addShape(pres.ShapeType.roundRect,{x:cx,y:cy,w:4.4,h:1.6,rectRadius:0.12,fill:{color:C.background1,transparency:15},line:{color:"E4D9EE",width:0.75},objectName:"QCard"+i});
-  s.addShape(pres.ShapeType.ellipse,{x:cx+0.25,y:cy+0.25,w:0.6,h:0.6,fill:{color:C.accent1},line:{type:"none"},objectName:"QIconBg"+i});
-  s.addImage({data:await icon(q[i][0]),x:cx+0.40,y:cy+0.40,w:0.3,h:0.3,altText:q[i][1]});
-  tb(s,q[i][1],{x:cx+1.1,y:cy+0.2,w:3.1,h:0.4,fontSize:18,bold:true,color:C.text1,objectName:"QHead"+i});
-  tb(s,q[i][2],{x:cx+1.1,y:cy+0.65,w:3.1,h:0.8,fontSize:14,color:C.text1,valign:"top",objectName:"QBody"+i});
-}
 await pres.writeFile({fileName:"welfare_health_disaster.pptx"});
 await applyTheme("welfare_health_disaster.pptx",THEME);
 })();
